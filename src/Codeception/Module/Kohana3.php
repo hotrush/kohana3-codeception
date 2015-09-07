@@ -108,7 +108,7 @@ class Kohana3 extends Framework
     }
 
     /**
-     * Make sure the Laravel bootstrap file exists.
+     * Make sure the Kohana bootstrap file exists.
      *
      * @throws ModuleConfigException
      */
