@@ -1,0 +1,21 @@
+{
+    "name": "hotrush/kohana3-codeception",
+    "description": "Kohana3 module for codeception 2.1.1",
+    "keywords": ["Codeception", "Kohana"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Roma Rush",
+            "email": "johny64@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "codeception/codeception": "~2.1.2"
+    },
+    "autoload": {
+        "psr-0": {
+            "Codeception": "src"
+        }
+    }
+}
