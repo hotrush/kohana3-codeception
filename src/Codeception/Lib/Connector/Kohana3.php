@@ -30,7 +30,10 @@ class Kohana3 extends Client
             $kohanaRequest->query($request->getParameters());
         }
         if (strtoupper($request->getMethod()) == 'POST') {
-            $kohanaRequest->body($request->getContent());
+            if ($request->getContent()) {
+                $kohanaRequest->headers('Content-Type','application/json');
+                $kohanaRequest->body($request->getContent());
+            }
             $kohanaRequest->post($request->getParameters());
         }
 
