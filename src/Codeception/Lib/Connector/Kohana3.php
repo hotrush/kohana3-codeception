@@ -24,6 +24,7 @@ class Kohana3 extends Client
         $_SERVER['REQUEST_METHOD'] = strtoupper($request->getMethod());
         $_SERVER['REQUEST_URI'] = strtoupper($uri);
 
+        \Request::$initial = null;
         $kohanaRequest = \Request::factory($uri);
         $kohanaRequest->method($_SERVER['REQUEST_METHOD']);
         if (strtoupper($request->getMethod()) == 'GET') {
