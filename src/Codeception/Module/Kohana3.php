@@ -71,9 +71,12 @@ class Kohana3 extends Framework
      */
     public function _initialize()
     {
-        $this->checkBootstrapFileExists();
-        $this->loadBootstrap();
-        $this->setConfigReader();
+        if (!class_exists('Kohana_Core'))
+        {
+            $this->checkBootstrapFileExists();
+            $this->loadBootstrap();
+            $this->setConfigReader();
+        }
         $this->client = new KohanaConnector();
     }
 
