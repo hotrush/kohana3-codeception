@@ -29,8 +29,18 @@ class Kohana3 extends Client
         $kohanaRequest->method($_SERVER['REQUEST_METHOD']);
         if (strtoupper($request->getMethod()) == 'GET') {
             $kohanaRequest->query($request->getParameters());
+        } else {
+            if (strpos($request->getUri(), '?') !== false) {
+                $parse = parse_url($request->getUri());
+                if ($parse['query']) {
+                    parse_str($parse['query'], $queryParams);
+                    if ($queryParams) {
+                        $kohanaRequest->query($queryParams);
+                    }
+                }
+            }
         }
-        if (strtoupper($request->getMethod()) == 'POST') {
+        if (strtoupper($request->getMethod()) == 'POST' || strtoupper($request->getMethod()) == 'PUT') {
             if ($request->getContent()) {
                 $kohanaRequest->headers('Content-Type','application/json');
                 $kohanaRequest->body($request->getContent());
