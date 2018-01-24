@@ -6,14 +6,12 @@ use Symfony\Component\BrowserKit\Client;
 
 class Kohana3 extends Client
 {
-
     /**
      * @param SymfonyRequest $request
      * @return Response
      */
     protected function doRequest($request)
     {
-
         $_COOKIE = $request->getCookies();
         $_SERVER = $request->getServer();
         $_FILES = $request->getFiles();
