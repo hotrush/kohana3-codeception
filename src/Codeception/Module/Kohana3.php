@@ -74,7 +74,7 @@ class Kohana3 extends Framework implements ORM
      */
     public function _initialize()
     {
-        putenv('KOHANA_ENV=testing');
+        $_SERVER['KOHANA_ENV'] = 'testing';
 
         if (!class_exists('Kohana_Core'))
         {
