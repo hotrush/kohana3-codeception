@@ -5,6 +5,7 @@ use Codeception\Exception\ModuleConfigException;
 use Codeception\Lib\Connector\Kohana3 as KohanaConnector;
 use Codeception\Lib\Framework;
 use Codeception\Lib\ModuleContainer;
+use Codeception\Lib\Interfaces\ORM;
 
 class Kohana3 extends Framework implements ORM
 {
