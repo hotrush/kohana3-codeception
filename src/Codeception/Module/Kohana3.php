@@ -73,10 +73,11 @@ class Kohana3 extends Framework
      */
     public function _initialize()
     {
+        putenv('KOHANA_ENV=testing');
+
         if (!class_exists('Kohana_Core'))
         {
             $this->checkBootstrapFileExists();
-            $this->setConfigFile();
             $this->loadBootstrap();
         }
         $this->client = new KohanaConnector();
@@ -137,13 +138,6 @@ class Kohana3 extends Framework
         require $this->config['bootstrap_file'];
     }
 
-    protected function setConfigFile()
-    {
-        if ($this->config['environment_file']) {
-            \Kohana::$env_file = $this->config['environment_file'];
-        }
-    }
-
     /**
      * Inserts record into the database.
      * If you pass the name of a database table as the first argument, this method returns an integer ID.
@@ -164,7 +158,7 @@ class Kohana3 extends Framework
     public function haveRecord($table, $attributes = [])
     {
         if (class_exists($this->getModelClassName($table))) {
-            $model = new \ORM::factory($table);
+            $model = \ORM::factory($table);
             if (! $model instanceof \ORM) {
                 throw new \RuntimeException("Class $table is not an ORM model");
             }
