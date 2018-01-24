@@ -6,7 +6,7 @@ use Codeception\Lib\Connector\Kohana3 as KohanaConnector;
 use Codeception\Lib\Framework;
 use Codeception\Lib\ModuleContainer;
 
-class Kohana3 extends Framework
+class Kohana3 extends Framework implements ORM
 {
     /**
      * @var array
