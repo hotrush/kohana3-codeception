@@ -143,10 +143,10 @@ class Kohana3 extends Framework implements ORM
     protected function loadRoutes()
     {
         if ($this->config['subdomain'] && property_exists('Request', 'subdomain')) {
-            Request::$subdomain = $this->config['subdomain'];
+            \Request::$subdomain = $this->config['subdomain'];
         }
         if (method_exists('Route', 'load')) {
-            Route::load();
+            \Route::load();
         }
     }
 
