@@ -28,9 +28,9 @@ class Kohana3 extends Framework implements ORM
                 'application_dir' => 'application',
                 'modules_dir' => 'modules',
                 'system_dir' => 'system',
-                'custom_config_reader' => null,
                 'environment_file' => '.env.testing',
-                'api_mode' => false,
+                'api_mode' => null,
+                'subdomain' => null,
             ],
             (array)$config
         );
@@ -60,7 +60,7 @@ class Kohana3 extends Framework implements ORM
             define('KOHANA_START_MEMORY', memory_get_usage());
         }
 
-        if (!defined('API_MODE')) {
+        if ($this->config['api_mode'] !== null && !defined('API_MODE')) {
             define('API_MODE', $this->config['api_mode']);
         }
 
@@ -80,6 +80,7 @@ class Kohana3 extends Framework implements ORM
         {
             $this->checkBootstrapFileExists();
             $this->loadBootstrap();
+            $this->loadRoutes();
         }
         $this->client = new KohanaConnector();
     }
@@ -137,6 +138,16 @@ class Kohana3 extends Framework implements ORM
     protected function loadBootstrap()
     {
         require $this->config['bootstrap_file'];
+    }
+
+    protected function loadRoutes()
+    {
+        if ($this->config['subdomain'] && property_exists('Request', 'subdomain')) {
+            Request::$subdomain = $this->config['subdomain'];
+        }
+        if (method_exists('Route', 'load')) {
+            Route::load();
+        }
     }
 
     /**
