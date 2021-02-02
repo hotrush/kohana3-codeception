@@ -52,11 +52,11 @@ class Kohana3 extends Client
         $kohanaRequest->cookie($_COOKIE);
         $kohanaRequest::$initial = $kohanaRequest;
         $kohanaResponse = $kohanaRequest->execute();
-        $content = $kohanaResponse->body();
-        $headers = (array) $kohanaResponse->headers();
-        $status = $kohanaResponse->status();
-        $response = new Response($content, $status, $headers);
-        return $response;
+        return new Response(
+            $kohanaResponse->body(),
+            $kohanaResponse->status(),
+            (array) $kohanaResponse->headers()
+        );
 
     }
 

@@ -31,6 +31,9 @@ class Kohana3 extends Framework implements ORM
                 'environment_file' => '.env.testing',
                 'api_mode' => null,
                 'subdomain' => null,
+                'cleanup' => true,
+                'migration_command' => null,
+                'seed_command' => null,
             ],
             (array)$config
         );
@@ -81,6 +84,7 @@ class Kohana3 extends Framework implements ORM
             $this->checkBootstrapFileExists();
             $this->loadBootstrap();
             $this->loadRoutes();
+            $this->initializeDb();
         }
         $this->client = new KohanaConnector();
     }
@@ -92,7 +96,9 @@ class Kohana3 extends Framework implements ORM
      */
     public function _before(\Codeception\TestCase $test)
     {
-
+        if ($this->config['cleanup']) {
+            \Database::instance()->begin();
+        }
     }
 
     /**
@@ -102,7 +108,9 @@ class Kohana3 extends Framework implements ORM
      */
     public function _after(\Codeception\TestCase $test)
     {
-
+        if ($this->config['cleanup']) {
+            \Database::instance()->rollback();
+        }
     }
 
     /**
@@ -120,7 +128,7 @@ class Kohana3 extends Framework implements ORM
      *
      * @throws ModuleConfigException
      */
-    protected function checkBootstrapFileExists()
+    protected function checkBootstrapFileExists(): void
     {
         $bootstrapFile = $this->config['bootstrap_file'];
 
@@ -135,12 +143,12 @@ class Kohana3 extends Framework implements ORM
     /**
      * Load Kohana bootstrap
      */
-    protected function loadBootstrap()
+    protected function loadBootstrap(): void
     {
         require $this->config['bootstrap_file'];
     }
 
-    protected function loadRoutes()
+    protected function loadRoutes(): void
     {
         if ($this->config['subdomain'] && property_exists('Request', 'subdomain')) {
             \Request::$subdomain = $this->config['subdomain'];
@@ -148,6 +156,21 @@ class Kohana3 extends Framework implements ORM
         if (method_exists('Route', 'load')) {
             \Route::load();
         }
+    }
+
+    protected function initializeDb(): void
+    {
+        if ($this->config['migration_command']) {
+            $this->callMinion($this->config['migration_command']);
+        }
+        if ($this->config['seed_command']) {
+            $this->callMinion($this->config['seed_command']);
+        }
+    }
+
+    protected function callMinion(string $command): void
+    {
+        shell_exec(sprintf('./minion %s', $command));
     }
 
     /**
