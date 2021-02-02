@@ -226,7 +226,8 @@ class Kohana3 extends Framework implements ORM
     public function seeRecord($table, $attributes = [])
     {
         if (class_exists($this->getModelClassName($table))) {
-            if (! $this->findModel($table, $attributes)) {
+            $model = $this->findModel($table, $attributes);
+            if (!$model || !$model->loaded()) {
                 $this->fail("Could not find $table with " . json_encode($attributes));
             }
         } elseif (! $this->findRecord($table, $attributes)) {
@@ -251,7 +252,8 @@ class Kohana3 extends Framework implements ORM
     public function dontSeeRecord($table, $attributes = [])
     {
         if (class_exists($this->getModelClassName($table))) {
-            if ($this->findModel($table, $attributes)) {
+            $model = $this->findModel($table, $attributes);
+            if ($model && $model->loaded()) {
                 $this->fail("Unexpectedly found matching $table with " . json_encode($attributes));
             }
         } elseif ($this->findRecord($table, $attributes)) {
@@ -278,7 +280,8 @@ class Kohana3 extends Framework implements ORM
     public function grabRecord($table, $attributes = [])
     {
         if (class_exists($this->getModelClassName($table))) {
-            if (! $model = $this->findModel($table, $attributes)) {
+            $model = $this->findModel($table, $attributes);
+            if (!$model || !$model->loaded()) {
                 $this->fail("Could not find $table with " . json_encode($attributes));
             }
             return $model;
