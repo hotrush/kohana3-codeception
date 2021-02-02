@@ -98,6 +98,7 @@ class Kohana3 extends Framework implements ORM
     {
         if ($this->config['cleanup']) {
             \Database::instance()->begin();
+            $this->debugSection('Database', 'Transaction started');
         }
     }
 
@@ -110,6 +111,7 @@ class Kohana3 extends Framework implements ORM
     {
         if ($this->config['cleanup']) {
             \Database::instance()->rollback();
+            $this->debugSection('Database', 'Transaction cancelled; all changes reverted.');
         }
     }
 
@@ -170,7 +172,7 @@ class Kohana3 extends Framework implements ORM
 
     protected function callMinion(string $command): void
     {
-        shell_exec(sprintf('./minion %s', $command));
+        $this->debug(shell_exec(sprintf('./minion %s', $command)));
     }
 
     /**
