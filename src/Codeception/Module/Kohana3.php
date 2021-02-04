@@ -6,6 +6,7 @@ use Codeception\Lib\Connector\Kohana3 as KohanaConnector;
 use Codeception\Lib\Framework;
 use Codeception\Lib\ModuleContainer;
 use Codeception\Lib\Interfaces\ORM;
+use ORM as KohanaORM;
 
 class Kohana3 extends Framework implements ORM
 {
@@ -178,12 +179,12 @@ class Kohana3 extends Framework implements ORM
     /**
      * Inserts record into the database.
      * If you pass the name of a database table as the first argument, this method returns an integer ID.
-     * You can also pass the class name of an Eloquent model, in that case this method returns an Eloquent model.
+     * You can also pass the class name of an orm model, in that case this method returns an orm model.
      *
      * ``` php
      * <?php
      * $user_id = $I->haveRecord('users', array('name' => 'Davert')); // returns integer
-     * $user = $I->haveRecord('App\User', array('name' => 'Davert')); // returns Eloquent model
+     * $user = $I->haveRecord('App\User', array('name' => 'Davert')); // returns orm model
      * ?>
      * ```
      *
@@ -195,8 +196,8 @@ class Kohana3 extends Framework implements ORM
     public function haveRecord($table, $attributes = [])
     {
         if (class_exists($this->getModelClassName($table))) {
-            $model = \ORM::factory($table);
-            if (! $model instanceof \ORM) {
+            $model = KohanaORM::factory($table);
+            if (! $model instanceof KohanaORM) {
                 throw new \RuntimeException("Class $table is not an ORM model");
             }
             $model->values($attributes)->create();
@@ -212,7 +213,7 @@ class Kohana3 extends Framework implements ORM
 
     /**
      * Checks that record exists in database.
-     * You can pass the name of a database table or the class name of an Eloquent model as the first argument.
+     * You can pass the name of a database table or the class name of an orm model as the first argument.
      *
      * ``` php
      * <?php
@@ -238,7 +239,7 @@ class Kohana3 extends Framework implements ORM
     }
     /**
      * Checks that record does not exist in database.
-     * You can pass the name of a database table or the class name of an Eloquent model as the first argument.
+     * You can pass the name of a database table or the class name of an orm model as the first argument.
      *
      * ``` php
      * <?php
@@ -265,18 +266,18 @@ class Kohana3 extends Framework implements ORM
     /**
      * Retrieves record from database
      * If you pass the name of a database table as the first argument, this method returns an array.
-     * You can also pass the class name of an Eloquent model, in that case this method returns an Eloquent model.
+     * You can also pass the class name of an orm model, in that case this method returns an orm model.
      *
      * ``` php
      * <?php
      * $record = $I->grabRecord('users', array('name' => 'davert')); // returns array
-     * $record = $I->grabRecord('App\User', array('name' => 'davert')); // returns Eloquent model
+     * $record = $I->grabRecord('App\User', array('name' => 'davert')); // returns orm model
      * ?>
      * ```
      *
      * @param string $table
      * @param array $attributes
-     * @return array|EloquentModel
+     * @return array|KohanaORM
      * @part orm
      */
     public function grabRecord($table, $attributes = [])
@@ -295,7 +296,7 @@ class Kohana3 extends Framework implements ORM
     }
     /**
      * Checks that number of given records were found in database.
-     * You can pass the name of a database table or the class name of an Eloquent model as the first argument.
+     * You can pass the name of a database table or the class name of an orm model as the first argument.
      *
      * ``` php
      * <?php
@@ -325,7 +326,7 @@ class Kohana3 extends Framework implements ORM
     }
     /**
      * Retrieves number of records from database
-     * You can pass the name of a database table or the class name of an Eloquent model as the first argument.
+     * You can pass the name of a database table or the class name of an orm model as the first argument.
      *
      * ``` php
      * <?php
@@ -347,7 +348,7 @@ class Kohana3 extends Framework implements ORM
      * @param string $modelClass
      * @param array $attributes
      *
-     * @return \ORM
+     * @return KohanaORM
      */
     protected function findModel($modelClass, $attributes = [])
     {
@@ -399,7 +400,7 @@ class Kohana3 extends Framework implements ORM
     /**
      * @param string $modelClass
      *
-     * @return EloquentModel
+     * @return KohanaORM
      */
     protected function getQueryBuilderFromModel($modelClass)
     {
@@ -412,7 +413,7 @@ class Kohana3 extends Framework implements ORM
     /**
      * @param string $table
      *
-     * @return EloquentModel
+     * @return \Database_Query_Builder
      */
     protected function getQueryBuilderFromTable($table)
     {
