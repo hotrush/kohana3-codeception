@@ -11,7 +11,8 @@
     ],
     "require": {
         "php": ">=7.4.0",
-        "codeception/codeception": "^4.1.22"
+        "codeception/codeception": "^4.1.22",
+        "codeception/lib-innerbrowser": "^1.5"
     },
     "autoload": {
         "psr-0": {
