@@ -1,11 +1,12 @@
 <?php
+
 namespace Codeception\Lib\Connector;
 
-use Symfony\Component\BrowserKit\Response;
-use Symfony\Component\BrowserKit\Request;
-use Symfony\Component\BrowserKit\AbstractBrowser as Client;
-use Request as KohanaRequest;
 use HTTP_Request;
+use Request as KohanaRequest;
+use Symfony\Component\BrowserKit\AbstractBrowser as Client;
+use Symfony\Component\BrowserKit\Request;
+use Symfony\Component\BrowserKit\Response;
 
 class Kohana3 extends Client
 {
@@ -44,14 +45,15 @@ class Kohana3 extends Client
         }
         if (in_array($method, [HTTP_Request::POST, HTTP_Request::PUT])) {
             if ($request->getContent()) {
-                $kohanaRequest->headers('Content-Type','application/json');
+                $kohanaRequest->headers('Content-Type', 'application/json');
                 $kohanaRequest->body($request->getContent());
             }
             $kohanaRequest->post($request->getParameters());
         }
 
         if (isset($_SERVER['PHP_AUTH_USER']) && isset($_SERVER['PHP_AUTH_PW'])) {
-            $kohanaRequest->headers('Authorization', 'Basic '.base64_encode($_SERVER['PHP_AUTH_USER'].':'.$_SERVER['PHP_AUTH_PW']));
+            $kohanaRequest->headers('Authorization',
+                'Basic ' . base64_encode($_SERVER['PHP_AUTH_USER'] . ':' . $_SERVER['PHP_AUTH_PW']));
         }
         $kohanaRequest->cookie($_COOKIE);
         $kohanaRequest::$initial = $kohanaRequest;
@@ -62,7 +64,6 @@ class Kohana3 extends Client
             $kohanaResponse->status(),
             (array) $kohanaResponse->headers()
         );
-
     }
 
     protected function createKohanaRequest(Request $request): KohanaRequest
@@ -86,15 +87,17 @@ class Kohana3 extends Client
 
         if (in_array($method, [HTTP_Request::POST, HTTP_Request::PUT])) {
             if ($request->getContent()) {
-                $kohanaRequest->headers('Content-Type','application/json');
+                $kohanaRequest->headers('Content-Type', 'application/json');
                 $kohanaRequest->body($request->getContent());
             }
             $kohanaRequest->post($request->getParameters());
         }
 
         if (isset($_SERVER['PHP_AUTH_USER']) && isset($_SERVER['PHP_AUTH_PW'])) {
-            $kohanaRequest->headers('Authorization', 'Basic '.base64_encode($_SERVER['PHP_AUTH_USER'].':'.$_SERVER['PHP_AUTH_PW']));
+            $kohanaRequest->headers('Authorization',
+                'Basic ' . base64_encode($_SERVER['PHP_AUTH_USER'] . ':' . $_SERVER['PHP_AUTH_PW']));
         }
+
         $kohanaRequest->cookie($_COOKIE);
         $kohanaRequest::$initial = $kohanaRequest;
     }
