@@ -1,25 +1,25 @@
 <?php
+
 namespace Codeception\Module;
 
 use Codeception\Exception\ModuleConfigException;
 use Codeception\Lib\Connector\Kohana3 as KohanaConnector;
-use Codeception\Lib\Framework;
+use Codeception\Lib\InnerBrowser;
+use Codeception\Lib\Interfaces\ActiveRecord;
 use Codeception\Lib\ModuleContainer;
-use Codeception\Lib\Interfaces\ORM;
 use ORM as KohanaORM;
 
-class Kohana3 extends Framework implements ORM
+class Kohana3 extends InnerBrowser implements ActiveRecord
 {
+
     /**
-     * @var array
+     * @var array|bool[]|string[]
      */
     public $config = [];
 
     /**
-     * Constructor.
-     *
      * @param ModuleContainer $container
-     * @param $config
+     * @param array|null $config
      */
     public function __construct(ModuleContainer $container, $config = null)
     {
@@ -36,7 +36,7 @@ class Kohana3 extends Framework implements ORM
                 'migration_command' => null,
                 'seed_command' => null,
             ],
-            (array)$config
+            (array) $config
         );
 
         $projectDir = \Codeception\Configuration::projectDir();
@@ -45,20 +45,20 @@ class Kohana3 extends Framework implements ORM
             define('EXT', '.php');
         }
         if (!defined('DOCROOT')) {
-            define('DOCROOT', realpath($projectDir).DIRECTORY_SEPARATOR);
+            define('DOCROOT', realpath($projectDir) . DIRECTORY_SEPARATOR);
         }
         if (!defined('APPPATH')) {
-            define('APPPATH', realpath(DOCROOT.$this->config['application_dir']).DIRECTORY_SEPARATOR);
+            define('APPPATH', realpath(DOCROOT . $this->config['application_dir']) . DIRECTORY_SEPARATOR);
         }
         if (!defined('MODPATH')) {
-            define('MODPATH', realpath(DOCROOT.$this->config['modules_dir']).DIRECTORY_SEPARATOR);
+            define('MODPATH', realpath(DOCROOT . $this->config['modules_dir']) . DIRECTORY_SEPARATOR);
         }
         if (!defined('SYSPATH')) {
-            define('SYSPATH', realpath(DOCROOT.$this->config['system_dir']).DIRECTORY_SEPARATOR);
+            define('SYSPATH', realpath(DOCROOT . $this->config['system_dir']) . DIRECTORY_SEPARATOR);
         }
 
         if (!defined('KOHANA_START_TIME')) {
-            define('KOHANA_START_TIME', microtime(TRUE));
+            define('KOHANA_START_TIME', microtime(true));
         }
         if (!defined('KOHANA_START_MEMORY')) {
             define('KOHANA_START_MEMORY', memory_get_usage());
@@ -197,14 +197,16 @@ class Kohana3 extends Framework implements ORM
     {
         if (class_exists($this->getModelClassName($table))) {
             $model = KohanaORM::factory($table);
-            if (! $model instanceof KohanaORM) {
+            if (!$model instanceof KohanaORM) {
                 throw new \RuntimeException("Class $table is not an ORM model");
             }
             $model->values($attributes)->create();
+
             return $model;
         }
         try {
-            list($id, ) = \DB::insert($table, array_keys($attributes))->values(array_values($attributes))->execute();
+            list($id,) = \DB::insert($table, array_keys($attributes))->values(array_values($attributes))->execute();
+
             return $id;
         } catch (\Exception $e) {
             $this->fail("Could not insert record into table '$table':\n\n" . $e->getMessage());
@@ -233,10 +235,11 @@ class Kohana3 extends Framework implements ORM
             if (!$model || !$model->loaded()) {
                 $this->fail("Could not find $table with " . json_encode($attributes));
             }
-        } elseif (! $this->findRecord($table, $attributes)) {
+        } elseif (!$this->findRecord($table, $attributes)) {
             $this->fail("Could not find matching record in table '$table'");
         }
     }
+
     /**
      * Checks that record does not exist in database.
      * You can pass the name of a database table or the class name of an orm model as the first argument.
@@ -263,6 +266,7 @@ class Kohana3 extends Framework implements ORM
             $this->fail("Unexpectedly found matching record in table '$table'");
         }
     }
+
     /**
      * Retrieves record from database
      * If you pass the name of a database table as the first argument, this method returns an array.
@@ -287,13 +291,16 @@ class Kohana3 extends Framework implements ORM
             if (!$model || !$model->loaded()) {
                 $this->fail("Could not find $table with " . json_encode($attributes));
             }
+
             return $model;
         }
         if (! $record = $this->findRecord($table, $attributes)) {
             $this->fail("Could not find matching record in table '$table'");
         }
+
         return $record;
     }
+
     /**
      * Checks that number of given records were found in database.
      * You can pass the name of a database table or the class name of an orm model as the first argument.
@@ -324,6 +331,7 @@ class Kohana3 extends Framework implements ORM
             }
         }
     }
+
     /**
      * Retrieves number of records from database
      * You can pass the name of a database table or the class name of an orm model as the first argument.
@@ -344,6 +352,7 @@ class Kohana3 extends Framework implements ORM
     {
         return class_exists($this->getModelClassName($table))? $this->countModels($table, $attributes) : $this->countRecords($table, $attributes);
     }
+
     /**
      * @param string $modelClass
      * @param array $attributes
@@ -356,8 +365,10 @@ class Kohana3 extends Framework implements ORM
         foreach ($attributes as $key => $value) {
             $query->where($key, '=', $value);
         }
+
         return $query->find();
     }
+
     /**
      * @param string $table
      * @param array $attributes
@@ -369,8 +380,10 @@ class Kohana3 extends Framework implements ORM
         foreach ($attributes as $key => $value) {
             $query->where($key, '=', $value);
         }
+
         return (array) $query->execute()->current();
     }
+
     /**
      * @param string $modelClass
      * @param array $attributes
@@ -382,8 +395,10 @@ class Kohana3 extends Framework implements ORM
         foreach ($attributes as $key => $value) {
             $query->where($key, '=', $value);
         }
+
         return $query->count();
     }
+
     /**
      * @param string $table
      * @param array $attributes
@@ -395,8 +410,10 @@ class Kohana3 extends Framework implements ORM
         foreach ($attributes as $key => $value) {
             $query->where($key, '=', $value);
         }
+
         return $query->execute()->get('count');
     }
+
     /**
      * @param string $modelClass
      *
@@ -408,8 +425,10 @@ class Kohana3 extends Framework implements ORM
         if (!$model instanceof \ORM) {
             throw new \RuntimeException("Class $modelClass is not an ORM model");
         }
+
         return $model;
     }
+
     /**
      * @param string $table
      *
