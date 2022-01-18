@@ -79,6 +79,8 @@ class Kohana3 extends InnerBrowser implements ActiveRecord
     public function _initialize()
     {
         $_SERVER['KOHANA_ENV'] = 'testing';
+	// Ensure environment variable is available also in exec() calls
+        putenv('KOHANA_ENV=testing');
 
         if (!class_exists('Kohana_Core'))
         {
